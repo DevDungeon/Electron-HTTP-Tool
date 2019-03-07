@@ -1,3 +1,22 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
+const { ipcRenderer } = require('electron')
+
+
+function log(message) {
+    // Log in back end console
+    ipcRenderer.send('log', message)
+}
+
+log('Starting renderer...')
+
+// Handle response from HTTP request
+ipcRenderer.on('response', (event, value) => {
+    log("HTTP Response received: " + value)
+    document.getElementById('main-text').innerText = value
+})
+
+document.getElementById("submit-button").addEventListener("click", function () {
+    let url = document.getElementById('url').value
+    log('Sending request to ' + url)
+    ipcRenderer.send('submit-request', url)
+    
+})
